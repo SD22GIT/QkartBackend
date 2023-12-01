@@ -56,3 +56,45 @@ userSchema.statics.isEmailTaken = async function (email) {
 /**
  * @typedef User
  */
+const usersSchema = mongoose.Schema(
+  {
+  name:{
+   type:String,
+   required: true,
+   trim: true,
+  },
+  email:{
+    type:String,
+    required: true,
+    trim: true,
+   },
+   password:{
+    type:String,
+    required: true,
+    trim: true,
+    minlength: 8
+   },
+   address:{
+    type:String,
+    required: true,
+    trim: true,
+    default: config.default_address
+   },
+   walletMoney:{
+    type:Number,
+    required: true,
+    default:config.default_wallet_money
+   }
+},
+{
+  timestamps: true,
+}
+);
+
+async function isEmailExist(email)
+{
+const data = await User.findOne({ "email": email })// Ensure you await
+}
+
+
+module.exports = mongoose.model("Users", usersSchema);
