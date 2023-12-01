@@ -38,7 +38,37 @@ const { userService } = require("../services");
  * @returns {User | {address: String}}
  *
  */
-const getUser = catchAsync(async (req, res) => {
+const getUser = catchAsync(async (req, res, next) => {
+   let user = await userService.getUserById(req.params.userId);
+  if(user)
+  {
+    console.log(user);
+    let data = {
+      _id: user._id,
+      email: user.email,
+      name: user.name,
+      walletMoney: user.walletMoney
+    }
+    res.status(200).send(data);
+  }
+  else
+  {
+    user = await userService.getUserByEmail(req.params.userId);
+    if(user)
+    {
+      console.log(user);
+      let data = {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        walletMoney: user.walletMoney};
+      res.status(200).send(data);
+    }
+    else
+    {
+    res.status(404).send("User not found");
+    }
+  }
 });
 
 
