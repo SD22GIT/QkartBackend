@@ -50,9 +50,9 @@ const getUserById =  (id)=>{
  *
  * 200 status code on duplicate email - https://stackoverflow.com/a/53144807
  */
-const createUser = (userObj)=>
+const createUser =async (userObj)=>
 {
- let isTaken =  User.isEmailTaken(userObj.email);
+ let isTaken = await User.isEmailTaken(userObj.email);
  if(isTaken)
  {
   return Promise.reject(new ApiError(200,"Email already taken"));
