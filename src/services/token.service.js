@@ -39,8 +39,8 @@ const generateToken = (userId, expires, type, secret = config.jwt.secret) => {
  * }
  */
 const generateAuthTokens = async (user) => {
- const expiryTime = Math.floor(Date.now() / 1000) + 60;
- return {access:{token:generateToken(user._id,expiryTime,"ACCESS"),expires:new Date(Date.now()+60000)}};
+ const expiryTime = Math.floor(Date.now() / 1000) + (5*60);
+ return {access:{token:generateToken(user._id,expiryTime,"ACCESS"),expires:new Date(Date.now()+(5*60*1000))}};
 };
 
 module.exports = {

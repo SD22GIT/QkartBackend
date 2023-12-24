@@ -14,6 +14,7 @@ describe("Auth test", () => {
       userOne.isPasswordMatch = () => {
         return true;
       };
+
       // Setup mock function for the getUserByEmail() function of userService
       const getUserByEmailMock = jest.fn();
 

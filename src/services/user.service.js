@@ -66,4 +66,30 @@ const createUser =async (userObj)=>
 
 
 
-module.exports = {getUserById,getUserByEmail,createUser}
+// TODO: CRIO_TASK_MODULE_CART - Implement getUserAddressById()
+/**
+ * Get subset of user's data by id
+ * - Should fetch from Mongo only the email and address fields for the user apart from the id
+ *
+ * @param {ObjectId} id
+ * @returns {Promise<User>}
+ */
+const getUserAddressById = async (id) => {
+  const projection = { _id: 0, address:1 };
+  const user =  User.find({_id:id},projection);
+  return user;
+};
+
+/**
+ * Set user's shipping address
+ * @param {String} email
+ * @returns {String}
+ */
+const setAddress = async (user, newAddress) => {
+  user.address = newAddress;
+  await user.save();
+
+  return user.address;
+};
+
+module.exports = {getUserById,getUserByEmail,createUser,getUserAddressById,setAddress}

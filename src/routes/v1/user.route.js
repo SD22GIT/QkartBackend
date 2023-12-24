@@ -17,6 +17,14 @@ const router = express.Router();
 const auth = require("../../middlewares/auth");
 
 //console.log(userValidation.getUser.params);
-router.use(auth);
-router.get("/:userId",validate(userValidation.getUser),(req,res,next)=>{userController.getUser(req,res,next)});
+//router.use(auth);
+router.get("/:userId",auth,validate(userValidation.getUser),(req,res,next)=>{userController.getUser(req,res,next)});
+
+router.put(
+  "/:userId",
+  auth,
+  validate(userValidation.setAddress),
+  userController.setAddress
+);
+
 module.exports = router;

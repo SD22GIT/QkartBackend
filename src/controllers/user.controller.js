@@ -4,10 +4,13 @@ const catchAsync = require("../utils/catchAsync");
 const { userService } = require("../services");
 
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement getUser() function
+// TODO: CRIO_TASK_MODULE_CART - Update function to process url with query params
 /**
  * Get user details
  *  - Use service layer to get User data
  * 
+ *  - If query param, "q" equals "address", return only the address field of the user
+ *  - Else,
  *  - Return the whole user object fetched from Mongo
 
  *  - If data exists for the provided "userId", return 200 status code and the object
@@ -33,6 +36,12 @@ const { userService } = require("../services");
  *     "__v": 0
  * }
  * 
+ * Request url - <workspace-ip>:8082/v1/users/6010008e6c3477697e8eaba3?q=address
+ * Response - 
+ * {
+ *   "address": "ADDRESS_NOT_SET"
+ * }
+ * 
  *
  * Example response status codes:
  * HTTP 200 - If request successfully completes
@@ -44,10 +53,15 @@ const { userService } = require("../services");
  */
 const getUser = catchAsync(async (req, res, next) => {
   const userIdFromToken = JSON.parse(Buffer.from(req.headers.authorization.split('.')[1], 'base64').toString());
-  
    if(req._id !== userIdFromToken.sub && req.params.userId !== userIdFromToken.sub)
    {
     throw new ApiError(403,"User not found");
+   }
+   if(req.query.q)
+   {
+    const user = await userService.getUserAddressById(req.params.userId);
+    res.status(200).send(user);
+    return user;
    }
 
    let user = await userService.getUserById(req.params.userId);
@@ -80,7 +94,27 @@ const getUser = catchAsync(async (req, res, next) => {
   }
 });
 
+const setAddress = catchAsync(async (req, res) => {
+  const user = await userService.getUserById(req.params.userId);
+
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+  }
+  if (user.email != req.user.email) {
+    throw new ApiError(
+      httpStatus.FORBIDDEN,
+      "User not authorized to access this resource"
+    );
+  }
+
+  const address = userService.setAddress(user, req.body.address);
+
+  res.send({
+    address: address,
+  });
+});
 
 module.exports = {
   getUser,
+  setAddress,
 };
