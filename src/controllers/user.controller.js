@@ -60,7 +60,7 @@ const getUser = catchAsync(async (req, res, next) => {
    if(req.query.q)
    {
     const user = await userService.getUserAddressById(req.params.userId);
-    res.status(200).send(user);
+    res.status(200).send({address:user.address});
     return user;
    }
 
@@ -96,7 +96,6 @@ const getUser = catchAsync(async (req, res, next) => {
 
 const setAddress = catchAsync(async (req, res) => {
   const user = await userService.getUserById(req.params.userId);
-
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
@@ -107,8 +106,7 @@ const setAddress = catchAsync(async (req, res) => {
     );
   }
 
-  const address = userService.setAddress(user, req.body.address);
-
+  const address = await userService.setAddress(user, req.body.address);
   res.send({
     address: address,
   });
