@@ -75,9 +75,9 @@ const createUser =async (userObj)=>
  * @returns {Promise<User>}
  */
 const getUserAddressById = async (id) => {
-  const projection = { address:1, email:1 };
-  const user = await User.find({_id:id},projection);
-  return user[0];
+  const projection = {email:1, address:1 };
+  const user = await User.findOne({_id:id},projection);
+  return user;
 };
 
 /**
