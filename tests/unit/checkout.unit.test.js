@@ -1,6 +1,6 @@
 const httpStatus = require("http-status");
 const { userOne, userTwo } = require("../fixtures/user.fixture");
-const { Cart } = require("../../src/models");
+const { Cart, User } = require("../../src/models");
 const { cartService } = require("../../src/services");
 const {
   cartWithProductsUserOne,
@@ -50,7 +50,7 @@ describe("Cart test", () => {
     it("should throw 400 error if user's cart doesn't have any product", async () => {
       // Mock Cart model to return `emptyCart` object as output to `Cart.findOne()` call
       mockingoose(Cart).toReturn(emptyCart, "findOne");
-
+     console.log("444444444");
       const res = cartService.checkout(userOne);
 
       // TODO: CRIO_TASK_MODULE_TEST - Assert if
@@ -133,6 +133,7 @@ describe("Cart test", () => {
       mockingoose(Cart).toReturn(cartSaveMock, "save");
       mockingoose(Cart).toReturn(cartWithProductsUserOne, "findOne");
       // Call the method to be tested - `checkout()`
+      console.log("555555");
       await cartService.checkout(userOneFinal);
 
       // Assert User model's hasSetNonDefaultAddress() instance method was called
