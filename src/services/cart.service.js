@@ -2,6 +2,8 @@ const httpStatus = require("http-status");
 const { Cart, Product } = require("../models");
 const ApiError = require("../utils/ApiError");
 const config = require("../config/config");
+const { userTwo } = require("../../tests/fixtures/user.fixture");
+const { User } = require("../models");
 
 // TODO: CRIO_TASK_MODULE_CART - Implement the Cart service methods
 
@@ -188,9 +190,54 @@ const deleteProductFromCart = async (user, productId) => {
 };
 
 
+// TODO: CRIO_TASK_MODULE_TEST - Implement checkout function
+/**
+ * Checkout a users cart.
+ * On success, users cart must have no products.
+ *
+ * @param {User} user
+ * @returns {Promise}
+ * @throws {ApiError} when cart is invalid
+ */
+const checkout = async (user) => {
+  //console.log(user);
+  const schema = new User(user);
+  const isAdrressNonDefault = await schema.hasSetNonDefaultAddress();
+  if(!isAdrressNonDefault)
+  {
+    throw new ApiError(400,"User address not set");
+  }
+  let cart = await getCartByUser(user);
+  cart = cart.toObject();
+  if(cart.cartItems.length==0)
+  {
+    throw new ApiError(400,"User does not have any item in cart");
+  }
+
+  let total=0;
+  for(let i=0;i<cart.cartItems.length;++i)
+  {
+     total = total + (cart.cartItems[i].product.cost * cart.cartItems[i].quantity);
+  }
+
+  if(user.walletMoney<total)
+  {
+    throw new ApiError(400,"Wallet balance is insufficient");
+  }
+
+  user.walletMoney = user.walletMoney - total;
+  cart.cartItems = [];
+  // await User.updateOne({_id:user.id});
+  // await Cart.updateOne
+  await User.updateOne({_id:user.id},{walletMoney:user.walletMoney});
+  await Cart.updateOne({email:user.email},{cartItems:[]});
+
+};
+
 module.exports = {
   getCartByUser,
   addProductToCart,
   updateProductInCart,
   deleteProductFromCart,
+  checkout,
 };
