@@ -1,7 +1,7 @@
 const httpStatus = require("http-status");
 const catchAsync = require("../utils/catchAsync");
 const { cartService } = require("../services");
-
+const { User } = require("../models");
 /**
  * Fetch the cart details
  *
@@ -94,7 +94,7 @@ const updateProductInCart = catchAsync(async (req, res) => {
  * Checkout user's cart
  */
 const checkout = catchAsync(async (req, res) => {
-   await cartService.checkout(req.user);
+   await cartService.checkout(new User(req.user));
   return (
     res
       .sendStatus(204)

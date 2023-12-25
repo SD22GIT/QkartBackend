@@ -200,9 +200,11 @@ const deleteProductFromCart = async (user, productId) => {
  * @throws {ApiError} when cart is invalid
  */
 const checkout = async (user) => {
-  const schema = new User(user);
-  const isAdrressNonDefault = await schema.hasSetNonDefaultAddress();
-  console.log(isAdrressNonDefault);
+ // console.log(user);
+ // const schema = new User(user);
+ // console.log(schema);
+  const isAdrressNonDefault = await user.hasSetNonDefaultAddress();
+//  console.log(isAdrressNonDefault);
   if(!isAdrressNonDefault)
   {
     throw new ApiError(400,"User address not set");
